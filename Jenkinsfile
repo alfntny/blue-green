@@ -25,7 +25,7 @@ pipeline {
         stage('Load Image into Minikube') {
             steps {
                 script {
-                    sh "minikube image load myapp:${DEPLOY_COLOR}"
+                    sh "minikube image load myapp:${DEPLOY_COLOR} --profile=minikube"
                 }
             }
         }

@@ -22,14 +22,6 @@ pipeline {
             }
         }
 
-        stage('Load Image into Minikube') {
-            steps {
-                script {
-                    sh "minikube image load myapp:${DEPLOY_COLOR} --profile=minikube"
-                }
-            }
-        }
-
         stage('Deploy to Kubernetes') {
             steps {
                 script {

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BLUE — v1 LIVE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue: #00b4ff;
+      --blue-dim: #0077aa;
+      --blue-dark: #001a2e;
+      --blue-glow: rgba(0,180,255,0.35);
+      --grid: rgba(0,180,255,0.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #000d1a;
+      color: var(--blue);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridScroll 8s linear infinite;
+      z-index: 0;
+    }
+    @keyframes gridScroll { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
+    body::after {
+      content: '';
+      position: fixed;
+      left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      opacity: 0.6;
+      animation: scanline 4s linear infinite;
+      z-index: 1;
+    }
+    @keyframes scanline { 0% { top: -10px; opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { top: 110vh; opacity: 0; } }
+    .container { position: relative; z-index: 10; text-align: center; padding: 2rem; }
+    .frame { position: relative; padding: 3rem 4rem; border: 1px solid rgba(0,180,255,0.2); }
+    .frame::before, .frame::after, .frame .corner-bl, .frame .corner-br { content: ''; position: absolute; width: 20px; height: 20px; border-color: var(--blue); border-style: solid; }
+    .frame::before  { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .frame::after   { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .frame .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+    .frame .corner-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .status-bar { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--blue-dim); margin-bottom: 2rem; display: flex; gap: 2rem; justify-content: center; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); margin-right: 6px; animation: blink 1.2s ease-in-out infinite; box-shadow: 0 0 6px var(--blue); }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .version-tag { font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.4em; color: var(--blue-dim); text-transform: uppercase; margin-bottom: 1rem; }
+    h1 { font-family: 'Orbitron', monospace; font-size: clamp(3rem, 10vw, 7rem); font-weight: 900; letter-spacing: 0.05em; line-height: 1; color: var(--blue); text-shadow: 0 0 20px var(--blue-glow), 0 0 60px var(--blue-glow), 0 0 100px rgba(0,180,255,0.15); animation: flicker 6s ease-in-out infinite; margin-bottom: 0.5rem; }
+    @keyframes flicker { 0%, 94%, 96%, 98%, 100% { opacity: 1; } 95%, 97% { opacity: 0.85; } }
+    .subtitle { font-size: 1rem; letter-spacing: 0.15em; color: rgba(0,180,255,0.7); margin-bottom: 2.5rem; }
+    .terminal-block { background: rgba(0,180,255,0.04); border: 1px solid rgba(0,180,255,0.15); padding: 1rem 1.5rem; text-align: left; font-size: 0.78rem; line-height: 1.9; max-width: 420px; margin: 0 auto 2rem; }
+    .terminal-block .cmd { color: var(--blue); }
+    .terminal-block .ok  { color: #00ff88; }
+    .terminal-block .dim { color: rgba(0,180,255,0.4); }
+    .typing::after { content: '▋'; animation: cursor 0.8s step-end infinite; }
+    @keyframes cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .badge { display: inline-block; font-family: 'Orbitron', monospace; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3em; padding: 0.4rem 1.2rem; border: 1px solid var(--blue); color: var(--blue); text-transform: uppercase; box-shadow: 0 0 12px var(--blue-glow), inset 0 0 12px rgba(0,180,255,0.05); }
+    .stats { display: flex; gap: 2.5rem; justify-content: center; margin-top: 2.5rem; }
+    .stat { text-align: center; }
+    .stat-val { font-family: 'Orbitron', monospace; font-size: 1.4rem; font-weight: 700; color: var(--blue); text-shadow: 0 0 10px var(--blue-glow); }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.2em; color: var(--blue-dim); margin-top: 2px; }
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+    .particle { position: absolute; width: 2px; height: 2px; background: var(--blue); border-radius: 50%; opacity: 0; animation: float var(--dur, 8s) ease-in var(--delay, 0s) infinite; }
+    @keyframes float { 0% { transform: translateY(100vh) translateX(0); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.3; } 100% { transform: translateY(-10vh) translateX(var(--dx, 20px)); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="container">
+    <div class="frame">
+      <div class="corner-bl"></div>
+      <div class="corner-br"></div>
+      <div class="status-bar">
+        <span><span class="dot"></span>SYSTEM ONLINE</span>
+        <span>ENV: PRODUCTION</span>
+        <span>NODE: K8S-BLUE-01</span>
+      </div>
+      <div class="version-tag">// deployment v1.0.0</div>
+      <h1>BLUE</h1>
+      <p class="subtitle">STABLE &nbsp;·&nbsp; LIVE &nbsp;·&nbsp; SERVING TRAFFIC</p>
+      <div class="terminal-block">
+        <div><span class="dim">$</span> <span class="cmd">kubectl get svc myapp-service</span></div>
+        <div><span class="ok">✔</span> selector: <span class="cmd">version=blue</span></div>
+        <div><span class="dim">$</span> <span class="cmd">kubectl get pods -l version=blue</span></div>
+        <div><span class="ok">✔</span> 2/2 pods <span class="ok">Running</span></div>
+        <div><span class="dim">$</span> <span class="cmd typing">uptime --watch</span></div>
+      </div>
+      <div class="badge">🔵 &nbsp; Active Deployment</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-val" id="uptime">00:00:00</div><div class="stat-label">UPTIME</div></div>
+        <div class="stat"><div class="stat-val">100%</div><div class="stat-label">TRAFFIC</div></div>
+        <div class="stat"><div class="stat-val">v1.0</div><div class="stat-label">VERSION</div></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let seconds = 0;
+    setInterval(() => {
+      seconds++;
+      const h = String(Math.floor(seconds / 3600)).padStart(2,'0');
+      const m = String(Math.floor((seconds % 3600) / 60)).padStart(2,'0');
+      const s = String(seconds % 60).padStart(2,'0');
+      document.getElementById('uptime').textContent = `${h}:${m}:${s}`;
+    }, 1000);
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.setProperty('--dur', (6 + Math.random() * 8) + 's');
+      p.style.setProperty('--delay', (Math.random() * 8) + 's');
+      p.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
+      container.appendChild(p);
+    }
+  </script>
+</body>
+</html>
